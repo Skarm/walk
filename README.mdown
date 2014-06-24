@@ -23,66 +23,89 @@ Using Walk
 The preferred way to create GUIs with Walk is to use its declarative sub package,
 as illustrated in this small example:
 
-##### `test.go`
+##### `main.go`
 
 ```go
 package main
 
 import (
-	"github.com/kumakichi/walk"
-	. "github.com/kumakichi/walk/declarative"
-	"strings"
+    "github.com/kumakichi/walk"
+    . "github.com/kumakichi/walk/declarative"
+    "strings"
 )
 
 func main() {
-	var inTE, outTE *walk.TextEdit
+    var inTE, outTE *walk.TextEdit
+    var mw *walk.MainWindow
 
-	MainWindow{
-		Title:   "SCREAMO",
-		MinSize: Size{600, 400},
-		Layout:  VBox{},
-		Children: []Widget{
-			HSplitter{
-				Children: []Widget{
-					TextEdit{AssignTo: &inTE},
-					TextEdit{AssignTo: &outTE, ReadOnly: true},
-				},
-			},
-			PushButton{
-				Text: "SCREAM",
-				OnClicked: func() {
-					outTE.SetText(strings.ToUpper(inTE.Text()))
-				},
-			},
-		},
-	}.Run()
+    if err := (MainWindow{
+        AssignTo: &mw,
+        Title:   "SCREAMO",
+        MinSize: Size{300, 200},
+        Layout:  VBox{},
+        Children: []Widget{
+            HSplitter{
+                Children: []Widget{
+                    TextEdit{AssignTo: &inTE},
+                    TextEdit{AssignTo: &outTE, ReadOnly: true},
+                },
+            },
+            PushButton{
+                Text: "SCREAM",
+                OnClicked: func() {
+                    outTE.SetText(strings.ToUpper(inTE.Text()))
+                },
+            },
+        },
+    }.Create()); err != nil {
+        // do some work
+    }
+
+	mainIcon, err := walk.NewIconFromResource("101")
+	if err != nil {
+        // do some work
+	}
+	mw.SetIcon(mainIcon)
+    mw.Run()
 }
 ```
 
-##### Create Manifest `test.manifest`
+##### Create Resource file `version.rc`
 
 ```xml
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-    <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
-        <assemblyIdentity version="1.0.0.0" processorArchitecture="*" name="SomeFunkyNameHere" type="win32"/>
-        <dependency>
-            <dependentAssembly>
-                <assemblyIdentity type="win32" name="Microsoft.Windows.Common-Controls" version="6.0.0.0" processorArchitecture="*" publicKeyToken="6595b64144ccf1df" language="*"/>
-            </dependentAssembly>
-        </dependency>
-    </assembly>
+#include "winver.h"
+#define RT_MANIFEST  24
+#define CREATEPROCESS_MANIFEST_RESOURCE_ID 1
+//#define ISOLATIONAWARE_MANIFEST_RESOURCE_ID 2
+//#define ISOLATIONAWARE_NOSTATICIMPORT_MANIFEST_RESOURCE_ID 3
+#define IDI_ICON_S 101
+#define IMG_SET 102
+
+IDI_ICON_S       ICON      "a.ico"
+IMG_SET        BITMAP        "Settings.bmp"
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST MOVEABLE PURE
+{
+ "<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>"
+ "<assembly xmlns=""urn:schemas-microsoft-com:asm.v1"" manifestVersion=""1.0"">"
+     "<assemblyIdentity version=""1.0.0.0"" processorArchitecture=""*"" name=""SomeFunkyNameHere"" type=""win32""/>"
+     "<description>Your application description here.</description>"
+         "<dependency>"
+             "<dependentAssembly>"
+                 "<assemblyIdentity type=""win32"" name=""Microsoft.Windows.Common-Controls"" version=""6.0.0.0"" processorArchitecture=""*"" publicKeyToken=""6595b64144ccf1df"" language=""*""/>"
+             "</dependentAssembly>"
+         "</dependency>"
+ "</assembly>"
+}
 ```
 
-Then either compile the manifest using the [rsrc tool](https://github.com/akavel/rsrc), like this:
+Then compile the resource file using the [windres tool](http://sourceforge.net/projects/mingw/), like this:
 
-	go get github.com/akavel/rsrc
-	rsrc -manifest test.manifest -o rsrc.syso
-
-or rename the `test.manifest` file to `test.exe.manifest` and distribute it with the application instead.
+	windres -o version.syso version.rc
 
 ##### Build app
 
-In the directory containing `test.go` run
+In the directory containing `main.go` run
 
 	go build
 	
@@ -92,11 +115,11 @@ To get rid of the cmd window, instead run
 
 ##### Run app
 	
-	test.exe
+	demo.exe
 	
-##### Sample Output (Windows 7)
+##### Sample Output (Windows XP)
 
-![alt tag](http://i.imgur.com/lUrgE2Q.png)
+![alt tag](http://www.geekpics.net/images/2014/06/04/edES8Axp5.png)
 
 ##### More Examples
 There are some [examples](examples) that should get you started.
