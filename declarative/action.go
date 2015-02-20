@@ -10,7 +10,7 @@ import (
 )
 
 import (
-	"github.com/kumakichi/walk"
+	"github.com/Skarm/walk"
 )
 
 type Shortcut struct {

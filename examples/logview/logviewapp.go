@@ -10,8 +10,8 @@ import (
 )
 
 import (
-	"github.com/kumakichi/walk"
-	. "github.com/kumakichi/walk/declarative"
+	"github.com/Skarm/walk"
+	. "github.com/Skarm/walk/declarative"
 )
 
 func main() {

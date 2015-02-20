@@ -10,8 +10,8 @@ import (
 )
 
 import (
-	"github.com/kumakichi/walk"
-	"github.com/kumakichi/win"
+	"github.com/Skarm/walk"
+	"github.com/Skarm/win"
 )
 
 type LogView struct {

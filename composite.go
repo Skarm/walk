@@ -5,7 +5,7 @@
 package walk
 
 import (
-	"github.com/kumakichi/win"
+	"github.com/Skarm/win"
 )
 
 const compositeWindowClass = `\o/ Walk_Composite_Class \o/`

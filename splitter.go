@@ -12,7 +12,7 @@ import (
 )
 
 import (
-	"github.com/kumakichi/win"
+	"github.com/Skarm/win"
 )
 
 const splitterWindowClass = `\o/ Walk_Splitter_Class \o/`

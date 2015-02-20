@@ -11,7 +11,7 @@ import (
 )
 
 import (
-	"github.com/kumakichi/walk"
+	"github.com/Skarm/walk"
 )
 
 var conditionsByName = make(map[string]walk.Condition)

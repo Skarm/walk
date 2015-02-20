@@ -3,7 +3,7 @@
 package main
 
 import (
-	"github.com/kumakichi/walk"
+	"github.com/Skarm/walk"
 )
 
 type myDialogUI struct {

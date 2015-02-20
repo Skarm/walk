@@ -10,7 +10,7 @@ import (
 )
 
 import (
-	"github.com/kumakichi/win"
+	"github.com/Skarm/win"
 )
 
 // TableViewColumn represents a column in a TableView.
