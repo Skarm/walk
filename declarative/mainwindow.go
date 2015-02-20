@@ -103,6 +103,65 @@ func (mw MainWindow) Create() error {
 	})
 }
 
+func (mw MainWindow) CreateHidden() error {
+	w, err := walk.NewMainWindow()
+	if err != nil {
+		return err
+	}
+
+	tlwi := topLevelWindowInfo{
+		Name:             mw.Name,
+		Font:             mw.Font,
+		ToolTipText:      "",
+		MinSize:          mw.MinSize,
+		MaxSize:          mw.MaxSize,
+		ContextMenuItems: mw.ContextMenuItems,
+		OnKeyDown:        mw.OnKeyDown,
+		OnKeyPress:       mw.OnKeyPress,
+		OnKeyUp:          mw.OnKeyUp,
+		OnMouseDown:      mw.OnMouseDown,
+		OnMouseMove:      mw.OnMouseMove,
+		OnMouseUp:        mw.OnMouseUp,
+		OnSizeChanged:    mw.OnSizeChanged,
+		DataBinder:       mw.DataBinder,
+		Layout:           mw.Layout,
+		Children:         mw.Children,
+	}
+
+	builder := NewBuilder(nil)
+
+	w.SetSuspended(true)
+	builder.Defer(func() error {
+		w.SetSuspended(false)
+		return nil
+	})
+
+	builder.deferBuildMenuActions(w.Menu(), mw.MenuItems)
+	builder.deferBuildActions(w.ToolBar().Actions(), mw.ToolBarItems)
+
+	return builder.InitWidget(tlwi, w, func() error {
+		if err := w.SetTitle(mw.Title); err != nil {
+			return err
+		}
+
+		if err := w.SetSize(mw.Size.toW()); err != nil {
+			return err
+		}
+
+		imageList, err := walk.NewImageList(walk.Size{16, 16}, 0)
+		if err != nil {
+			return err
+		}
+		w.ToolBar().SetImageList(imageList)
+
+		if mw.AssignTo != nil {
+			*mw.AssignTo = w
+		}
+
+		return nil
+	})
+}
+
 func (mw MainWindow) Run() (int, error) {
 	var w *walk.MainWindow
 
